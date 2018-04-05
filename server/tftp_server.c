@@ -3,18 +3,22 @@
  *       Filename:  tftp_server.c
  *        Created:  Thursday 30 March 2017 11:56:06  IST
  *         Author:  KEWAL UKUNDE , kewalukunde@gmail.com
- *   Organization:  Emertxe technology Banglore
  *
  * =====================================================================================
  */
 
-#include "../tftp.h"
+#include <tftp.h>
 
-int main()
+int main(int argc , char **argv)
 {
-    int len, sock_fd, data_sock_fd,c_size,i = 0,file_fd;
+	if (argc != 2) {
+		printf("usage : server <client IP ADDRESS>");
+		exit(2);
+	}
+    int len, sock_fd, c_size, file_fd;
     char *buff = calloc(DATA_SIZE,sizeof(char));
     ssize_t r_byte;
+	char *ip_address = argv[1];
     struct sockaddr_in serv_addr,cli_addr;
     socklen_t cli_len;
     packet r_packet, s_packet;
@@ -25,7 +29,7 @@ int main()
 
     /* Bind it to a particular IP address & port */
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = inet_addr(IP_ADDRESS);
+    serv_addr.sin_addr.s_addr = inet_addr(ip_address);
     serv_addr.sin_port = htons(SERVER_PORT);
 
     bind(sock_fd, (struct sockaddr*)&serv_addr,sizeof(serv_addr));

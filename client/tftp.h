@@ -3,7 +3,6 @@
  *       Filename:  tftp.h
  *        Created:  Friday 31 March 2017 12:12:33  IST
  *         Author:  KEWAL UKUNDE , kewalukunde@gmail.com
- *   Organization:  Emertxe technology Banglore
  *
  * =====================================================================================
  */
@@ -20,6 +19,12 @@
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+//#include <error.h>
+//#include <errno.h>
+#include <stdio.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+ 
 #define IP_ADDRESS  "127.0.0.1"
 #define SERVER_PORT 7000 
 #pragma pack(1)
@@ -53,3 +58,5 @@ typedef struct packet
     short int e_code;
     char msg[20];
 }packet;
+
+char *get_ip_address(void);

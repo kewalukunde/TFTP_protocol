@@ -3,21 +3,22 @@
  *       Filename:  tftp_client.c
  *        Created:  thusday 30 March 2017 02:48:48  IST
  *         Author:  KEWAL UKUNDE , kewalukunde@gmail.com
- *   Organization:  Emertxe technology Banglore
  *
  * =====================================================================================
  */
 
-#include "../tftp.h"
+#include <tftp.h>
 
-int main()
+int main(void)
 {
-    int sock_fd, data_sock_fd,c_size,file_fd,len;
+    int sock_fd, c_size, file_fd, len;
     ssize_t r_byte;
-    struct sockaddr_in serv_addr,cli_addr;
-    socklen_t serv_len,cli_len;
-    packet s_packet,r_packet;
-    
+    struct sockaddr_in serv_addr, cli_addr;
+    socklen_t cli_len;
+    packet s_packet, r_packet;
+ 
+	char *ip_address = get_ip_address();
+
     char *buff = calloc(15,sizeof(char));
     /* create udp socket */
     if ((sock_fd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
@@ -28,7 +29,7 @@ int main()
 
     /* Bind it to a particular IP address & port */
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = inet_addr(IP_ADDRESS);
+    serv_addr.sin_addr.s_addr = inet_addr(ip_address);
     serv_addr.sin_port = htons(SERVER_PORT);
 
     while (1)
