@@ -58,3 +58,5 @@ typedef struct packet
     short int e_code;
     char msg[20];
 }packet;
+
+char *get_ip_address(void);

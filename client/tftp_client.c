@@ -9,15 +9,22 @@
 
 #include <tftp.h>
 
-int main(void)
+int main(int argc , char **argv)
 {
+
+	if (argc != 2) {
+		printf("usage : server <client IP ADDRESS>");
+		exit(2);
+	}
+
+
     int sock_fd, c_size, file_fd, len;
     ssize_t r_byte;
     struct sockaddr_in serv_addr, cli_addr;
     socklen_t cli_len;
     packet s_packet, r_packet;
+	char *ip_address = argv[1];
  
-	char *ip_address = get_ip_address();
 
     char *buff = calloc(15,sizeof(char));
     /* create udp socket */
