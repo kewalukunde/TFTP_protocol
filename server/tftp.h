@@ -19,8 +19,8 @@
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-//#include <error.h>
-//#include <errno.h>
+#include <error.h>
+#include <errno.h>
 #include <stdio.h>
 #include <netdb.h>
 #include <arpa/inet.h>
@@ -31,12 +31,12 @@
 
 #define DATA_SIZE 450
 
-/* enum for error  */
+// enum for error  
 typedef enum error
 {
     FILE_NOT_FOUND = 1,
     FILE_EXIST,
-}error;
+}error_pack;
 
 /* enum for opcode */
 typedef enum opcode

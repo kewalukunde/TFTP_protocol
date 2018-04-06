@@ -19,14 +19,14 @@
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-//#include <error.h>
-//#include <errno.h>
+#include <error.h>
+#include <errno.h>
 #include <stdio.h>
 #include <netdb.h>
 #include <arpa/inet.h>
  
 #define IP_ADDRESS  "127.0.0.1"
-#define SERVER_PORT 7000 
+#define SERVER_PORT 7000
 #pragma pack(1)
 
 #define DATA_SIZE 450
@@ -36,7 +36,7 @@ typedef enum error
 {
     FILE_NOT_FOUND = 1,
     FILE_EXIST,
-}error;
+}error_pack;
 
 /* enum for opcode */
 typedef enum opcode
