@@ -15,6 +15,7 @@ int main(void)
     char *buff = calloc(DATA_SIZE, sizeof(char));
     ssize_t r_byte;
 	int ret;
+	struct hostent IP_info;
 
 	//char *ip_address = get_ip_address();
 
@@ -33,6 +34,7 @@ int main(void)
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     serv_addr.sin_port = htons(SERVER_PORT);
 
+	printf("MY_IP : %s\n", inet_ntoa(INADDR_ANY);
     ret = bind(sock_fd, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
 	if (ret == -1)
 		error(1, errno, "bind failed");

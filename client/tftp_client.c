@@ -129,7 +129,7 @@ int main(int argc , char **argv)
             s_packet.opcode = WRITE_REQ;
 
             if ((file_fd = open(s_packet.filename, O_RDONLY)) == -1)
-				error(1, errno, "open failed");
+				printf("file not available\n");
             else {
                 /* sending data to server */
                 if(( c_size = sendto(sock_fd, (void*)&s_packet, sizeof(s_packet), 0,
