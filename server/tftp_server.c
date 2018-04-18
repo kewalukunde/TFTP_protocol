@@ -79,14 +79,12 @@ int main(void)
 					s_packet.e_code = 0;
 					s_packet.b_num++;
 
-					//printf("\nr_packet->data : %s\n",s_packet.data);
-
 					/* sending data packet */
 					if((c_size = sendto(sock_fd, (void *)&s_packet, sizeof(s_packet),
 									0, (struct sockaddr*)&cli_addr, cli_len)) == -1)
 						error(1, errno, "sendto failed");
 					else
-						printf("sending %2d data packet\t", s_packet.b_num);
+						printf("sending data packet %-3d\t", s_packet.b_num);
 
 					memset(buff, 0, DATA_SIZE);
 
@@ -97,7 +95,7 @@ int main(void)
 						error(1, errno, "recvfrom failed");
 					else {
 						r_packet = (packet)r_packet;
-						printf("\trecived %2dth acknowledge packet\n", r_packet.b_num);
+						printf(":\trecived acknowledge packet %-3d\n", r_packet.b_num);
 					}
 
 					/* checking data transfer is complited or not */
@@ -146,7 +144,7 @@ int main(void)
 									(struct sockaddr *)&cli_addr, &cli_len)) == -1)
 						error(1, errno, "recvfrom failed");
 					else
-						printf("recived data packet block %2d \t", r_packet.b_num);
+						printf("recived data packet block %-3d\t", r_packet.b_num);
 
 					len = strlen(r_packet.data);
 					//printf("\nr_packet.data = %s\n",r_packet.data);
@@ -163,7 +161,7 @@ int main(void)
 									0,(struct sockaddr*)&cli_addr, cli_len)) == -1)
 						perror("sendto:");
 					else
-						printf("sending acknowledge packet %2d\n",s_packet.b_num);
+						printf(":\tsending acknowledge packet %-3d\n",s_packet.b_num);
 
 					/* recived data less than 450 then break */
 					if ((r_byte < DATA_SIZE) || (len < DATA_SIZE)) {

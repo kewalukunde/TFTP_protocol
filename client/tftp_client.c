@@ -83,17 +83,19 @@ int main(int argc , char **argv)
 
             /* checking error code */
             if (r_packet.e_code != 0) {
+				printf("Rejected...!\n\n");
                 printf("%s\n\n", r_packet.msg);
 				if (remove(s_packet.filename) == -1)
 					printf("failed to delete file");
 			} else {
+				printf("Accepted...!\n\n");
                 /* loop to process data */
                 while (1) {
                     //printf("\nr_packet.data = %s\n",r_packet.data);
                     len = strlen(r_packet.data);
                     r_byte = write(file_fd, r_packet.data, strlen(r_packet.data));
 
-                    printf("recived %2dth data packet \t", r_packet.b_num);
+                    printf("recived data packet %-3d\t", r_packet.b_num);
 
                     s_packet.b_num = r_packet.b_num;
                     s_packet.e_code = 0;
@@ -106,7 +108,7 @@ int main(int argc , char **argv)
 									(struct sockaddr*)&serv_addr, sizeof(serv_addr))) == -1)
 						error(1, errno, "sendto failed");
 					else
-                        printf("Sending acknowledge packet %2d\n",s_packet.b_num);
+                        printf(":\tSending acknowledge packet %-3d\n",s_packet.b_num);
 
                     /* checking data sending comlited or not */
                     if ((r_byte  < DATA_SIZE) || (len < DATA_SIZE)) {
@@ -141,7 +143,7 @@ int main(int argc , char **argv)
 					error(1, errno, "recvfrom failed");
 
                 if(c_size)
-                    printf("\nrequsted for file '%s'..!\n\n", s_packet.filename);
+                    printf("\nRequsted for file '%s'..!\n\n", s_packet.filename);
                 else
                     printf("Error\n");
                 
@@ -152,10 +154,13 @@ int main(int argc , char **argv)
 					error(1, errno, "recvfrom failed");
 
                 /* error checking if it is*/
-                if (r_packet.e_code != 0)
+                if (r_packet.e_code != 0) {
+					printf("Rejected...!\n\n");
 					printf("%s...\n\n", r_packet.msg);
-                else {
+				} else {
                     s_packet.b_num = 0;
+					
+					printf("Accepted...!\n\n");
 
                     while (1) {
                         /* reading data */
@@ -167,14 +172,12 @@ int main(int argc , char **argv)
                         s_packet.e_code = 0;
                         s_packet.b_num++;
 
-                        ///printf("\nr_packet->data : %s\n",s_packet.data);
-
                         /* sending data */
                         if((c_size = sendto(sock_fd, (void *)&s_packet, sizeof(s_packet), 0,
 										(struct sockaddr*)&cli_addr, cli_len)) == -1)
 							error(1, errno, "sendto failed");
                         else
-                            printf("sending %2dth data packet \t", r_packet.b_num);
+                            printf("sending data packet %2d\t", s_packet.b_num);
 
                         memset(buff, 0, DATA_SIZE);
                         
@@ -185,7 +188,7 @@ int main(int argc , char **argv)
 							error(1, errno, "recvfrom failed");
                         else {
                             r_packet = (packet)r_packet;
-                            printf("recived acknowledge packet %d\n",r_packet.b_num);
+                            printf(":\trecived acknowledge packet %d\n",r_packet.b_num);
                         }
 
                         if (r_byte < DATA_SIZE) {
@@ -202,9 +205,9 @@ int main(int argc , char **argv)
             exit(0);
         else if(!strcmp(cmd, "help")) {
             printf("\nUsage : get <filename>\n");
-            printf("Usage : put <filename>\n");
+            printf("Usage : put <filename>\n\n");
 		} else
-            printf("\nInvalied command..!!\n");
+            printf("\nInvalied command..!!\n\n");
 
     }
     close(sock_fd);
