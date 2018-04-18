@@ -21,8 +21,9 @@ int main(int argc , char **argv)
     socklen_t cli_len;
     packet s_packet, r_packet;
 	char *ip_address = argv[1];
- 
-    char *buff = calloc(15,sizeof(char));
+	char cmd[10], *ptr;
+    char *buff = calloc(50, sizeof(char));
+
     /* create udp socket */
     if ((sock_fd = socket(AF_INET,SOCK_DGRAM,0)) < 0)
 		error(1, errno, "socket failed");
@@ -35,15 +36,18 @@ int main(int argc , char **argv)
 
     while (1)
     {
-        memset(&s_packet,0,sizeof(s_packet));
-        memset(&r_packet,0,sizeof(r_packet));
-        printf("Enter command : ");
-        scanf("%s",buff);
+        memset(&s_packet, 0, sizeof(s_packet));
+        memset(&r_packet, 0, sizeof(r_packet));
+        printf("ENTER REQUST: ");
+        scanf("%[^\n]",buff);
+		getchar();
+		strcpy(cmd, strtok(buff, " "));
+		ptr = strtok(NULL, " ");
+		if (ptr != NULL)
+			strcpy(s_packet.filename, ptr);
 
         /* get operetion */
-        if (!strcmp(buff,"get")) {
-            printf("Enter file name : ");
-            scanf("%s",s_packet.filename);
+        if (!strcmp(cmd, "get")) {
             s_packet.b_num = 0;
             s_packet.e_code = 0;
             memset(s_packet.data,0,DATA_SIZE);
@@ -56,7 +60,7 @@ int main(int argc , char **argv)
             if ((file_fd = open(s_packet.filename, O_WRONLY | O_CREAT | O_EXCL,
 							S_IRWXU)) == -1) {
                 if (errno == EEXIST) {
-                    printf("\nFile already exist\n\n");
+                    printf("\nFile already exist...\n\n");
                     continue;
                 }
             }
@@ -78,9 +82,11 @@ int main(int argc , char **argv)
 				error(1, errno, "recvfrom failed");
 
             /* checking error code */
-            if (r_packet.e_code != 0)
-                printf("\n%s\n", r_packet.msg);
-            else {
+            if (r_packet.e_code != 0) {
+                printf("%s\n\n", r_packet.msg);
+				if (remove(s_packet.filename) == -1)
+					printf("failed to delete file");
+			} else {
                 /* loop to process data */
                 while (1) {
                     //printf("\nr_packet.data = %s\n",r_packet.data);
@@ -118,9 +124,7 @@ int main(int argc , char **argv)
 						error(1, errno, "recvfrom failed");
                 }
             }
-        } else if(!strcmp(buff,"put")) {
-            printf("Enter file name : ");
-            scanf("%s", s_packet.filename);
+        } else if(!strcmp(cmd, "put")) {
             s_packet.b_num = 0;
             s_packet.e_code = 0;
             memset(s_packet.data, 0, DATA_SIZE);
@@ -129,7 +133,7 @@ int main(int argc , char **argv)
             s_packet.opcode = WRITE_REQ;
 
             if ((file_fd = open(s_packet.filename, O_RDONLY)) == -1)
-				printf("file not available\n");
+				printf("\nfile not available\n\n");
             else {
                 /* sending data to server */
                 if(( c_size = sendto(sock_fd, (void*)&s_packet, sizeof(s_packet), 0,
@@ -194,11 +198,13 @@ int main(int argc , char **argv)
 
                 }
             }
-        }
-        else if(!strcmp(buff, "bye"))
+        } else if(!strcmp(cmd, "bye"))
             exit(0);
-        else
-            printf("\nEntered wrong command..!!\n");
+        else if(!strcmp(cmd, "help")) {
+            printf("\nUsage : get <filename>\n");
+            printf("Usage : put <filename>\n");
+		} else
+            printf("\nInvalied command..!!\n");
 
     }
     close(sock_fd);
