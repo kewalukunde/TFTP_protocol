@@ -91,7 +91,6 @@ int main(int argc , char **argv)
 				printf("Accepted...!\n\n");
                 /* loop to process data */
                 while (1) {
-                    //printf("\nr_packet.data = %s\n",r_packet.data);
                     len = strlen(r_packet.data);
                     r_byte = write(file_fd, r_packet.data, strlen(r_packet.data));
 
@@ -192,7 +191,6 @@ int main(int argc , char **argv)
                         }
 
                         if (r_byte < DATA_SIZE) {
-                            //printf("\nr_packet->data : %s\n",s_packet.data);
                             printf("\ncomplited data transfer..!\n\n");
                             close(file_fd);
                             break;   
